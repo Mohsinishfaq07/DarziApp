@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tailor_app/View/Home/HomeScreen.dart';
 import 'package:tailor_app/View/Login/LoginScreen.dart';
 
 class Splashscreen extends StatefulWidget {
@@ -16,9 +18,17 @@ class _SplashscreenState extends State<Splashscreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: 3), () {
-      Get.offAll(Loginscreen());
+     final FirebaseAuth _auth = FirebaseAuth.instance;
+        Future.delayed(Duration(seconds: 3), () {
+      if(_auth.currentUser!=null){
+  Get.offAll(Homescreen());
+     }
+     else{
+  Get.offAll(LoginScreen());
+     }
+
     });
+    
   }
 
   @override
