@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/View/Home/HomeScreen.dart';
-import 'package:tailor_app/View/Login/LoginScreen.dart';
+import 'package:tailor_app/View/Auth/Login/LoginScreen.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});

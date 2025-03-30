@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:tailor_app/Utils/Service/AuthService.dart';
-import 'package:tailor_app/View/Login/LoginScreen.dart';
+import 'package:tailor_app/View/Auth/Login/LoginScreen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -41,7 +41,8 @@ class _SignupScreenState extends State<SignupScreen> {
       );
       
       if (mounted) {
-        Get.offAll(() => const LoginScreen());
+        _authService.login( _emailController.text.trim(),  _passwordController.text.trim(),);
+        
       }
     } catch (e) {
       if (mounted) {
@@ -153,6 +154,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     style: GoogleFonts.poppins(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.white
                                     ),
                                   ),
                           ),
