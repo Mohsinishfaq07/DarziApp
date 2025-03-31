@@ -199,6 +199,7 @@ class _NewDressState extends ConsumerState<NewDress> {
             const Gap(16),
    CustomButton2(() {
     _saveDress();
+    Navigator.pop(context);
    }, "Save Dress")
           ],
         ),
