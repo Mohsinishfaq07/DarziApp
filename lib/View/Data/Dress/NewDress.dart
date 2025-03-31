@@ -61,7 +61,7 @@ class _NewDressState extends ConsumerState<NewDress> {
     try {
       await ref.read(dressProvider.notifier).addOrUpdateDress(dress);
       showSnackBar("Success", "Dress details saved!");
-      if (mounted) Get.back();
+      if (mounted) Navigator.pop(context);
     } catch (e) {
       showSnackBar("Error", "Failed to save dress: $e");
     }
@@ -199,7 +199,7 @@ class _NewDressState extends ConsumerState<NewDress> {
             const Gap(16),
    CustomButton2(() {
     _saveDress();
-    Navigator.pop(context);
+   
    }, "Save Dress")
           ],
         ),
