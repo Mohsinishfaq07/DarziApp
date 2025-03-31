@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/View/Data/NewList/Newlist.dart';
-import 'package:tailor_app/View/Data/SavedMeasures/SavedScreen.dart';
 
 final textStyle = GoogleFonts.poppins(
   fontSize: 25,

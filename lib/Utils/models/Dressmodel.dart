@@ -1,5 +1,4 @@
-
-import 'package:tailor_app/Utils/models/clientmodel.dart';
+import 'package:tailor_app/Utils/models/measurmentmodel.dart';
 
 class DressModel {
   final String name;
@@ -8,6 +7,7 @@ class DressModel {
   final String dressPic;
   final DateTime bookDate;
   final Measurement measurements;
+  final bool isCompleted;
 
   DressModel({
     required this.name,
@@ -16,40 +16,16 @@ class DressModel {
     required this.dressPic,
     required this.bookDate,
     required this.measurements,
+    required this.isCompleted,
   });
-
-  /// ✅ **Convert DressModel to Firestore Map**
-  Map<String, dynamic> toMap(String tailorEmail) {
-    return {
-      'name': name,
-      'number': number,
-      'dressColor': dressColor,
-      'dressPic': dressPic,
-      'bookDate': bookDate.millisecondsSinceEpoch, // Store date as timestamp
-      'measurements': measurements.toMap(tailorEmail), // ✅ Sync using existing `toMap()`
-    };
-  }
-
-  /// ✅ **Convert Firestore document to DressModel**
-  factory DressModel.fromMap(Map<String, dynamic> map) {
-    return DressModel(
-      name: map['name'] ?? '',
-      number: map['number'] ?? '',
-      dressColor: map['dressColor'] ?? '',
-      dressPic: map['dressPic'] ?? '',
-      bookDate: DateTime.fromMillisecondsSinceEpoch(map['bookDate']),
-      measurements: Measurement.fromMap(map['measurements']), // ✅ Directly use `Measurement.fromMap()`
-    );
-  }
-
-  /// ✅ **Copy method for updates**
-  DressModel copyWith({
+ DressModel copyWith({
     String? name,
     String? number,
     String? dressColor,
     String? dressPic,
     DateTime? bookDate,
     Measurement? measurements,
+    bool? isCompleted,
   }) {
     return DressModel(
       name: name ?? this.name,
@@ -58,6 +34,30 @@ class DressModel {
       dressPic: dressPic ?? this.dressPic,
       bookDate: bookDate ?? this.bookDate,
       measurements: measurements ?? this.measurements,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
+  Map<String, dynamic> toMap(String tailorEmail) {
+    return {
+      'name': name,
+      'number': number,
+      'dressColor': dressColor,
+      'dressPic': dressPic,
+      'bookDate': bookDate.millisecondsSinceEpoch,
+      'measurements': measurements.toMap(tailorEmail),
+      'isCompleted': isCompleted,
+    };
+  }
+
+  factory DressModel.fromMap(Map<String, dynamic> map) {
+    return DressModel(
+      name: map['name'] as String? ?? '',
+      number: map['number'] as String? ?? '',
+      dressColor: map['dressColor'] as String? ?? '',
+      dressPic: map['dressPic'] as String? ?? '',
+      bookDate: DateTime.fromMillisecondsSinceEpoch(map['bookDate'] as int? ?? 0),
+      measurements: Measurement.fromMap(map['measurements'] as Map<String, dynamic>? ?? {}),
+      isCompleted: map['isCompleted'] as bool? ?? false,
     );
   }
 }

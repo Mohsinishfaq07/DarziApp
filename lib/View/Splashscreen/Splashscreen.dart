@@ -18,9 +18,9 @@ class _SplashscreenState extends State<Splashscreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-     final FirebaseAuth _auth = FirebaseAuth.instance;
+     final FirebaseAuth auth = FirebaseAuth.instance;
         Future.delayed(Duration(seconds: 3), () {
-      if(_auth.currentUser!=null){
+      if(auth.currentUser!=null){
   Get.offAll(Homescreen());
      }
      else{

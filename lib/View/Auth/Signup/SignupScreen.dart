@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:tailor_app/Utils/Service/AuthService.dart';
-import 'package:tailor_app/View/Auth/Login/LoginScreen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});

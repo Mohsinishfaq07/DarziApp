@@ -3,8 +3,8 @@
   import 'package:gap/gap.dart';
   import 'package:google_fonts/google_fonts.dart';
   import 'package:fluttertoast/fluttertoast.dart';
-  import 'package:tailor_app/Utils/models/clientmodel.dart';
   import 'package:tailor_app/Utils/Provider/MeasurementsProvider.dart';
+import 'package:tailor_app/Utils/models/measurmentmodel.dart';
 import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
 
   class DetailScreen extends ConsumerStatefulWidget {
@@ -40,13 +40,13 @@ import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
       'name': widget.measurement.name,
       'number': widget.measurement.number,
       'length': widget.measurement.length.toString() ?? '',
-      'arm': widget.measurement.arm?.toString() ?? '',
-      'shoulder': widget.measurement.shoulder?.toString() ?? '',
+      'arm': widget.measurement.arm.toString() ?? '',
+      'shoulder': widget.measurement.shoulder.toString() ?? '',
       'color': widget.measurement.color,
-      'chest': widget.measurement.chest?.toString() ?? '',
-      'lap': widget.measurement.lap?.toString() ?? '',
-      'pant': widget.measurement.pant?.toString() ?? '',
-      'paincha': widget.measurement.paincha?.toString() ?? '',
+      'chest': widget.measurement.chest.toString() ?? '',
+      'lap': widget.measurement.lap.toString() ?? '',
+      'pant': widget.measurement.pant.toString() ?? '',
+      'paincha': widget.measurement.paincha.toString() ?? '',
       'armRound': widget.measurement.armRound?.toString() ?? '',
       'armHole': widget.measurement.armHole?.toString() ?? '',
       'waist': widget.measurement.waist?.toString() ?? '',
@@ -158,7 +158,7 @@ import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
                     children: [
                       ...controllers.entries.map((entry) {
                         return buildInputField(entry.key, entry.value);
-                      }).toList(),
+                      }),
                       buildNoteSection(),
                       Gap(20),
                       buildSaveButton(),

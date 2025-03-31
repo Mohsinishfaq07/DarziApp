@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:tailor_app/Utils/models/clientmodel.dart';
 import 'package:tailor_app/Utils/Provider/MeasurementsProvider.dart';
+import 'package:tailor_app/Utils/models/measurmentmodel.dart';
 
 class NewlistScreen extends ConsumerStatefulWidget {
   final bool isFemale;
@@ -141,7 +141,7 @@ class _NewlistScreenState extends ConsumerState<NewlistScreen> {
                     // All input fields
                     ...controllers.entries.map((entry) {
                       return buildInputField(entry.key, entry.value);
-                    }).toList(),
+                    }),
 
                     // Note field (Placed above the save button)
                     buildNoteSection(),

@@ -1,250 +1,208 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:gap/gap.dart';
-// import 'package:get/get.dart';
-// import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tailor_app/Utils/Provider/DressProvider.dart';
+import 'package:tailor_app/Utils/Provider/MeasurementsProvider.dart';
+import 'package:tailor_app/Utils/Snackbar/Snackbar.dart';
+import 'package:tailor_app/Utils/models/DressModel.dart';
+import 'package:tailor_app/Utils/models/measurmentmodel.dart';
+import 'package:tailor_app/View/Home/HomeScreen.dart';
+import 'package:tailor_app/Widgets/Bottomsheet/Bottomsheet.dart';
 
-// import 'package:tailor_app/Utils/Provider/DressProvider.dart';
-// import 'package:tailor_app/Utils/Provider/MeasurementsProvider.dart';
-// import 'package:tailor_app/Utils/models/DressModel.dart';  // Ensure correct import here
-// import 'package:tailor_app/Utils/models/clientmodel.dart';
-// import 'package:tailor_app/Utils/Snackbar/Snackbar.dart';
-// import 'package:tailor_app/View/Home/HomeScreen.dart';
-// import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
+import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
+import 'package:tailor_app/Widgets/Inpufield/Inputfield.dart';
 
-// class NewDress extends ConsumerStatefulWidget {
-//   const NewDress({super.key});
 
-//   @override
-//   ConsumerState<NewDress> createState() => _NewDressState();
-// }
+class NewDress extends ConsumerStatefulWidget {
+  const NewDress({super.key});
 
-// class _NewDressState extends ConsumerState<NewDress> {
-//   final _nameController = TextEditingController();
-//   final _numberController = TextEditingController();
-//   final _colorController = TextEditingController();
-//   DateTime? _selectedDate;
-//   Measurement? _selectedMeasurement;
+  @override
+  ConsumerState<NewDress> createState() => _NewDressState();
+}
 
-//   /// ✅ **Show Bottom Sheet for Existing Measurements**
-//   void _showMeasurementSelector(List<Measurement> measurements) {
-//     showModalBottomSheet(
-//       context: context,
-//       backgroundColor: Colors.transparent, // Makes the bottom sheet background transparent for custom design
-//       builder: (context) {
-//         return Container(
-//           padding: const EdgeInsets.all(16),
-//           decoration: BoxDecoration(
-//             color: Colors.white,
-//             borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-//           ),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               const Text(
-//                 "Select Measurement",
-//                 style: TextStyle(
-//                   fontSize: 20,
-//                   fontWeight: FontWeight.bold,
-//                   color: Colors.blueAccent,
-//                 ),
-//               ),
-//               const Divider(),
-//               ...measurements.map(
-//                 (measure) => ListTile(
-//                   title: Text("${measure.name} - ${measure.number}"),
-//                   subtitle: Text("Chest: ${measure.chest}, Waist: ${measure.waist}"),
-//                   onTap: () {
-//                     setState(() {
-//                       _selectedMeasurement = measure;
-//                       _nameController.text = measure.name;
-//                       _numberController.text = measure.number;
-//                     });
-//                     Navigator.pop(context);
-//                   },
-//                 ),
-//               ),
-//               ListTile(
-//                 leading: const Icon(Icons.add),
-//                 title: const Text("New Measurement", style: TextStyle(fontSize: 18)),
-//                 onTap: () {
-//               Get.to(Homescreen());
-//                 },
-//               ),
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
+class _NewDressState extends ConsumerState<NewDress> {
+  final _nameController = TextEditingController();
+  final _numberController = TextEditingController();
+  final _colorController = TextEditingController();
+  DateTime? _selectedDate;
+  Measurement? _selectedMeasurement;
 
-//   /// ✅ **Save Dress & Link Measurements**
-//   Future<void> _saveDress() async {
-//     if (_nameController.text.isEmpty || _numberController.text.isEmpty) {
-//       showSnackBar("Error", "Name & Number required");
-//       return;
-//     }
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _numberController.dispose();
+    _colorController.dispose();
+    super.dispose();
+  }
 
-//     final dressNotifier = ref.read(dressProvider.notifier);
+  Future<void> _saveDress() async {
+    if (_nameController.text.isEmpty || _numberController.text.isEmpty) {
+      showSnackBar("Error", "Name & Number required");
+      return;
+    }
 
-//     final dress = DressModel(
-//       name: _nameController.text,
-//       number: _numberController.text,
-//       dressColor: _colorController.text,
-//       dressPic: '',  // Image removed
-//       bookDate: _selectedDate ?? DateTime.now(),
-//        mea: _selectedMeasurement!,
-//         , isCompleted: null,
-//     );
+    if (_selectedMeasurement == null) {
+      showSnackBar("Error", "Please select measurements");
+      return;
+    }
 
-//     await dressNotifier.addOrUpdateDress(dress);
-//     showSnackBar("Success", "Dress details saved!");
-//   }
+    final dress = DressModel(
+      isCompleted: false,
+      name: _nameController.text,
+      number: _numberController.text,
+      dressColor: _colorController.text,
+      dressPic: '',
+      bookDate: _selectedDate ?? DateTime.now(),
+      measurements: _selectedMeasurement!,
+    );
 
-//   @override
-//   Widget build(BuildContext context) {
-//     final measurementStream = ref.watch(measurementProvider);
+    try {
+      await ref.read(dressProvider.notifier).addOrUpdateDress(dress);
+      showSnackBar("Success", "Dress details saved!");
+      if (mounted) Get.back();
+    } catch (e) {
+      showSnackBar("Error", "Failed to save dress: $e");
+    }
+  }
 
-//     return Scaffold(
-//       appBar: AppBar(
-//         iconTheme:IconThemeData(color: Colors.white),
-//         title:  Text("New Dress",style: GoogleFonts.poppins(
-//           color: Colors.white,fontSize: 20,
-//           fontWeight: FontWeight.bold
-//         ),),
-//         centerTitle: true,
-//         backgroundColor: Colors.blueAccent,
-//         elevation: 0,
-//       ),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.all(20),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             /// **📌 Name Input**
-//             Container(
-//               margin: const EdgeInsets.symmetric(vertical: 10),
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 borderRadius: BorderRadius.circular(12),
-//                 boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 8, offset: Offset(0, 4))],
-//               ),
-//               child: TextField(
-//                 controller: _nameController,
-//                 decoration: InputDecoration(
-//                   labelText: "Client Name",
-//                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-//                   border: InputBorder.none,
-//                   focusedBorder: OutlineInputBorder(
-//                     borderSide: BorderSide(color: Colors.blueAccent, width: 2),
-//                     borderRadius: BorderRadius.circular(12),
-//                   ),
-//                 ),
-//                 style: const TextStyle(fontSize: 18),
-//               ),
-//             ),
+  Future<void> _selectDate(BuildContext context) async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null) {
+      setState(() => _selectedDate = pickedDate);
+    }
+  }
 
-//             /// **📌 Number Input**
-//             Container(
-//               margin: const EdgeInsets.symmetric(vertical: 10),
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 borderRadius: BorderRadius.circular(12),
-//                 boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 8, offset: Offset(0, 4))],
-//               ),
-//               child: TextField(
-//                 controller: _numberController,
-//                 keyboardType: TextInputType.phone,
-//                 decoration: InputDecoration(
-//                   labelText: "Client Number",
-//                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-//                   border: InputBorder.none,
-//                   focusedBorder: OutlineInputBorder(
-//                     borderSide: BorderSide(color: Colors.blueAccent, width: 2),
-//                     borderRadius: BorderRadius.circular(12),
-//                   ),
-//                 ),
-//                 style: const TextStyle(fontSize: 18),
-//               ),
-//             ),
+  @override
+  Widget build(BuildContext context) {
+    final measurementStream = ref.watch(measurementProvider);
 
-//             /// **📌 Dress Color Input**
-//             Container(
-//               margin: const EdgeInsets.symmetric(vertical: 10),
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 borderRadius: BorderRadius.circular(12),
-//                 boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 8, offset: Offset(0, 4))],
-//               ),
-//               child: TextField(
-//                 controller: _colorController,
-//                 decoration: InputDecoration(
-//                   labelText: "Dress Color",
-//                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-//                   border: InputBorder.none,
-//                   focusedBorder: OutlineInputBorder(
-//                     borderSide: BorderSide(color: Colors.blueAccent, width: 2),
-//                     borderRadius: BorderRadius.circular(12),
-//                   ),
-//                 ),
-//                 style: const TextStyle(fontSize: 18),
-//               ),
-//             ),
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(
+          "New Dress",
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomInputField(
+              controller: _nameController,
+              label: "Client Name",
+              hintText: "Enter client name",
+            ),
+            const Gap(16),
+            CustomInputField(
+              controller: _numberController,
+              label: "Client Number",
+              hintText: "Enter client number",
+              keyboardType: TextInputType.phone,
+            ),
+            const Gap(16),
+            CustomInputField(
+              controller: _colorController,
+              label: "Dress Color",
+              hintText: "Enter dress color",
+            ),
+            const Gap(16),
+            _buildDateSelector(context),
+            const Gap(20),
+            _buildMeasurementSection(measurementStream),
+          ],
+        ),
+      ),
+    );
+  }
 
-//             /// **📆 Date Picker**
-//             TextButton(
-//               onPressed: () async {
-//                 final pickedDate = await showDatePicker(
-//                   context: context,
-//                   initialDate: DateTime.now(),
-//                   firstDate: DateTime(2020),
-//                   lastDate: DateTime(2100),
-//                 );
-//                 if (pickedDate != null) {
-//                   setState(() => _selectedDate = pickedDate);
-//                 }
-//               },
-           
-//               child: Text(
-//                 _selectedDate == null
-//                     ? "Select Booking Date"
-//                     : "Date: ${_selectedDate!.toLocal()}",
-//                 style: const TextStyle(fontSize: 15, color: Colors.blueAccent),
-//               ),
-//             ),
+  Widget _buildDateSelector(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _selectDate(context),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade300,
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.calendar_today, color: Colors.blueAccent),
+            const Gap(12),
+            Text(
+              _selectedDate == null
+                  ? "Select Booking Date"
+                  : "Date: ${_selectedDate!.toLocal().toString().split(' ')[0]}",
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-//             const SizedBox(height: 10),
-
-//             /// **📏 Link with Existing Measurement**
-//             Center(
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   Text(
-//                     _selectedMeasurement == null
-//                         ? "No Measurement Linked"
-//                         : "${_selectedMeasurement!.name} - ${_selectedMeasurement!.number}",
-//                     style: const TextStyle(fontSize: 16),
-//                   ),
-//                   Gap(20),
-//               CustomButton2(() {
-//                            measurementStream.whenData((measurements) {
-//                         _showMeasurementSelector(measurements);
-//                       });
-//               }, "Link Measurements"),
-//                           const SizedBox(height: 20),
-// CustomButton2(() {
-//   _saveDress();
-// }, "Save Dress"),
-      
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  Widget _buildMeasurementSection(AsyncValue<List<Measurement>> measurementStream) {
+    return Column(
+      children: [
+        Text(
+          _selectedMeasurement == null
+              ? "No Measurement Linked"
+              : "Linked: ${_selectedMeasurement!.name} - ${_selectedMeasurement!.number}",
+          style: const TextStyle(fontSize: 16),
+        ),
+        const Gap(20),
+        Row(
+          children: [
+            Expanded(
+              child: CustomButton2(
+          () {
+                   measurementStream.whenData((measurements) {
+                    MeasurementSelectorSheet.show(
+                      context: context,
+                      measurements: measurements,
+                      onMeasurementSelected: (measurement) {
+                        setState(() {
+                          _selectedMeasurement = measurement;
+                          _nameController.text = measurement.name;
+                          _numberController.text = measurement.number;
+                        });
+                      },
+                      onAddNew: () => Get.to( Homescreen()),
+                    );
+                  });
+          },"Add Measures",
+               
+              ),
+            ),
+            const Gap(16),
+   CustomButton2(() {
+    _saveDress();
+   }, "Save Dress")
+          ],
+        ),
+      ],
+    );
+  }
+}

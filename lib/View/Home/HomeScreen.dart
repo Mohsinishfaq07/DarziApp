@@ -3,7 +3,6 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/Utils/Service/AuthService.dart';
-import 'package:tailor_app/View/Data/Dress/NewDress.dart';
 import 'package:tailor_app/View/Data/Dress/Saveddress.dart';
 import 'package:tailor_app/View/Data/SavedMeasures/SavedScreen.dart';
 import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
@@ -59,9 +58,9 @@ class _HomescreenState extends State<Homescreen> {
             Get.to(SavedScreen());    
           },"Saved Entries"),
           Gap(10),
-  //  CustomButton(() {
-  //           Get.to(SavedDress());    
-  //         },"Dresses"),
+   CustomButton(() {
+            Get.to(SavedDress());    
+          },"Dresses"),
 
         ],
       ),
