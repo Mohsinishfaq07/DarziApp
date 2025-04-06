@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:tailor_app/Utils/Provider/AdProviders/BannerAdProvider.dart';
 import 'package:tailor_app/Utils/Provider/EditProvider.dart';
 import 'package:tailor_app/Utils/models/measurmentmodel.dart';
+import 'package:tailor_app/Widgets/BannerAd/BannerAdWidget.dart';
 import 'package:tailor_app/Widgets/Button/CustomButton.dart';
 import 'package:tailor_app/Widgets/Inpufield/MeasurementFields.dart';
 
@@ -139,19 +138,7 @@ class _NewlistScreenState extends ConsumerState<AddMeasurementScreen> {
             ),
           ),
           // Banner Ad
-          Consumer(
-            builder: (context, ref, child) {
-              final bannerAd = ref.watch(bannerAdProvider2);
-              return Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: bannerAd.size.width.toDouble(),
-                  height: bannerAd.size.height.toDouble(),
-                  child: AdWidget(ad: bannerAd),
-                ),
-              );
-            },
-          ),
+          BannerAdWidget(),
         ],
       ),
     );

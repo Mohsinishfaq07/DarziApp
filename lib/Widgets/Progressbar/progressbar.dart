@@ -15,7 +15,7 @@ class Circleloading extends StatelessWidget {
         child: SizedBox(
           width: 40,
           height: 40,
-          child: const CircularProgressIndicator(strokeWidth: 2),
+          child: const CircularProgressIndicator(strokeWidth: 4),
         ),
       ),
     );

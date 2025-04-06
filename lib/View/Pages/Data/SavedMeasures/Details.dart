@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/Utils/Provider/EditProvider.dart';
 import 'package:tailor_app/Utils/models/measurmentmodel.dart';
+import 'package:tailor_app/Widgets/BannerAd/BannerAdWidget.dart';
 import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
 import 'package:tailor_app/Widgets/Inpufield/MeasurementFields.dart';
 
@@ -135,6 +136,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                 ),
               ),
             ),
+            BannerAdWidget(),
           ],
         ),
       ),

@@ -10,19 +10,23 @@ import 'package:tailor_app/Widgets/ExitDialoge/ExitDialoge.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   // Lock orientation to portrait
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  MobileAds.instance.initialize();
+
+  // Initialize Google Mobile Ads
+  await MobileAds.instance.initialize();
+
+  // Load the banner ad globally
   runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

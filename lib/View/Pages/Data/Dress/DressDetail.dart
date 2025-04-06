@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:tailor_app/Utils/Provider/AdProviders/BannerAdProvider.dart';
 import 'package:tailor_app/Utils/Provider/DressProvider.dart';
 import 'package:tailor_app/Utils/Snackbar/Snackbar.dart';
 import 'package:tailor_app/Utils/models/DressModel.dart';
 import 'package:tailor_app/View/Pages/Data/SavedMeasures/Details.dart';
 import 'package:tailor_app/Widgets/Appbar/Customappbar.dart';
+import 'package:tailor_app/Widgets/BannerAd/BannerAdWidget.dart';
 import 'package:tailor_app/Widgets/Button/CustomButton.dart';
 import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
 import 'package:tailor_app/Widgets/Inpufield/Inputfield.dart';
@@ -80,15 +79,17 @@ class _DressDetailState extends ConsumerState<DressDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BannerAdWidget(),
       appBar: CustomAppbar("Dress Details"),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(15),
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    Gap(20),
                     buildInputField("Name", _nameController),
                     const Gap(16),
                     buildInputField("Number", _numberController),
@@ -117,17 +118,6 @@ class _DressDetailState extends ConsumerState<DressDetail> {
                       onPressed: () {
                         if (_isSaving) return;
                         _saveChanges();
-                      },
-                    ),
-                    const Gap(30),
-                    Consumer(
-                      builder: (context, ref, child) {
-                        final bannerAd = ref.watch(bannerAdProvider);
-                        return SizedBox(
-                          width: bannerAd.size.width.toDouble(),
-                          height: bannerAd.size.height.toDouble(),
-                          child: AdWidget(ad: bannerAd),
-                        );
                       },
                     ),
                   ],

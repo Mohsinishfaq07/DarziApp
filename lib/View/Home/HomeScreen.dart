@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:tailor_app/Utils/Provider/AdProviders/BannerAdProvider.dart';
 import 'package:tailor_app/View/Pages/Data/Dress/Saveddress.dart';
 import 'package:tailor_app/View/Pages/Data/NewEntry/NewEntryPage.dart';
 import 'package:tailor_app/View/Pages/Data/SavedMeasures/SavedScreen.dart';
 import 'package:tailor_app/View/Pages/ProfilePage/Profilepage.dart';
+import 'package:tailor_app/Widgets/BannerAd/BannerAdWidget.dart';
 import 'package:tailor_app/Widgets/ExitDialoge/ExitDialoge.dart';
 
 class Homescreen extends StatefulWidget {
@@ -36,6 +34,7 @@ class _HomescreenState extends State<Homescreen> {
                 setState(() {
                   _currentIndex = index;
                 });
+                FocusScope.of(context).unfocus();
               },
               children: [
                 // New Entry Page
@@ -49,21 +48,7 @@ class _HomescreenState extends State<Homescreen> {
             ),
 
             // Banner Ad Positioned at the bottom of the screen
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final bannerAd = ref.watch(bannerAdProvider);
-                  return SizedBox(
-                    width: bannerAd.size.width.toDouble(),
-                    height: bannerAd.size.height.toDouble(),
-                    child: AdWidget(ad: bannerAd),
-                  );
-                },
-              ),
-            ),
+            Positioned(bottom: 0, left: 0, right: 0, child: BannerAdWidget()),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
