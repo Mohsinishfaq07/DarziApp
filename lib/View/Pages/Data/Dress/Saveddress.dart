@@ -6,6 +6,7 @@ import 'package:tailor_app/Utils/Provider/DressProvider.dart';
 import 'package:tailor_app/View/Pages/Data/Dress/DressDetail.dart';
 import 'package:tailor_app/View/Pages/Data/Dress/NewDress.dart';
 import 'package:tailor_app/Widgets/Appbar/Customappbar.dart';
+import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
 import 'package:tailor_app/Widgets/Progressbar/progressbar.dart';
 import 'package:tailor_app/Widgets/SavedDressWidgets/DressTile.dart';
 import 'package:tailor_app/Widgets/Searchbar/Searchbar.dart'; // ✅ Import SearchBarWidget
@@ -54,6 +55,10 @@ class _SavedDressState extends ConsumerState<SavedDress> {
                 onClear: _clearSearch,
                 showClear: searchText.isNotEmpty,
               ),
+              CustomButton2(() {
+                FocusScope.of(context).unfocus();
+                Get.to(const NewDress());
+              }, "Add New Dress"),
               Expanded(
                 child:
                     filtered.isEmpty
@@ -108,13 +113,13 @@ class _SavedDressState extends ConsumerState<SavedDress> {
               ),
             ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 50, right: 5),
-        child: FloatingActionButton(
-          onPressed: () => Get.to(const NewDress()),
-          child: const Icon(Icons.add, color: Colors.orange),
-        ),
-      ),
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.only(bottom: 50, right: 5),
+      //   child: FloatingActionButton(
+      //     onPressed: () => Get.to(const NewDress()),
+      //     child: const Icon(Icons.add, color: Colors.orange),
+      //   ),
+      // ),
     );
   }
 }

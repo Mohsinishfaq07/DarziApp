@@ -85,7 +85,6 @@ class _NewDressState extends ConsumerState<NewDress> {
     final measurementStream = ref.watch(measurementProvider);
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       appBar: CustomAppbar("New Dress"),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -119,8 +118,6 @@ class _NewDressState extends ConsumerState<NewDress> {
           ),
         ),
       ),
-
-      /// ✅ This keeps the ad fixed and unaffected by the keyboard
       bottomNavigationBar: BannerAdWidget(),
     );
   }

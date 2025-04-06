@@ -18,7 +18,7 @@ Future<void> main() async {
   ]);
 
   // Initialize Google Mobile Ads
-  await MobileAds.instance.initialize();
+  MobileAds.instance.initialize();
 
   // Load the banner ad globally
   runApp(ProviderScope(child: const MyApp()));

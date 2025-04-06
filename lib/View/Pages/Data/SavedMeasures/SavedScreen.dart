@@ -48,6 +48,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
             },
             showClear: searchQuery.isNotEmpty,
           ),
+
           Expanded(
             child: measurementList.when(
               data: (measurements) {

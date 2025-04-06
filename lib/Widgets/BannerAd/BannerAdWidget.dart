@@ -1,57 +1,58 @@
-import 'package:flutter/widgets.dart';
+import 'dart:async'; // For Completer
+
+import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-class BannerAdWidget extends StatefulWidget {
+class BannerAdWidget extends StatelessWidget {
   const BannerAdWidget({super.key});
 
-  @override
-  State<StatefulWidget> createState() {
-    return _BannerAdWidgetState();
-  }
-}
-
-class _BannerAdWidgetState extends State<BannerAdWidget> {
-  late BannerAd _bannerAd;
-  bool _bannerReady = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _bannerAd = BannerAd(
-      adUnitId: "ca-app-pub-3940256099942544/6300978111",
+  // Future to load the banner ad
+  Future<BannerAd> _loadBannerAd() async {
+    final completer =
+        Completer<BannerAd>(); // Completer to handle async operation
+    late BannerAd bannerAd; // Declare the BannerAd variable
+    bannerAd = BannerAd(
+      adUnitId:
+          "ca-app-pub-3940256099942544/6300978111", // Your actual ad unit ID here
       request: const AdRequest(),
       size: AdSize.banner,
       listener: BannerAdListener(
         onAdLoaded: (_) {
-          setState(() {
-            _bannerReady = true;
-          });
+          completer.complete(
+            bannerAd,
+          ); // Completes the future when ad is loaded
         },
         onAdFailedToLoad: (ad, err) {
-          setState(() {
-            _bannerReady = false;
-          });
           ad.dispose();
+          completer.completeError(
+            'Failed to load banner ad: $err',
+          ); // Error handling
         },
       ),
     );
-    _bannerAd.load();
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _bannerAd.dispose();
+    // Start loading the ad
+    bannerAd.load();
+    return completer.future; // Return the future
   }
 
   @override
   Widget build(BuildContext context) {
-    return _bannerReady
-        ? SizedBox(
-          width: _bannerAd.size.width.toDouble(),
-          height: _bannerAd.size.height.toDouble(),
-          child: AdWidget(ad: _bannerAd),
-        )
-        : Container();
+    // Use FutureBuilder to asynchronously load and display the ad
+    return FutureBuilder<BannerAd>(
+      future: _loadBannerAd(), // Future that loads the ad
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final bannerAd = snapshot.data!;
+          return SizedBox(
+            width: bannerAd.size.width.toDouble(),
+            height: bannerAd.size.height.toDouble(),
+            child: AdWidget(ad: bannerAd), // Display the ad
+          );
+        } else {
+          return const SizedBox(); // Return empty container if no ad data
+        }
+      },
+    );
   }
 }

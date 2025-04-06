@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/View/Pages/Data/Dress/Saveddress.dart';
 import 'package:tailor_app/View/Pages/Data/NewEntry/NewEntryPage.dart';
@@ -7,14 +8,14 @@ import 'package:tailor_app/View/Pages/ProfilePage/Profilepage.dart';
 import 'package:tailor_app/Widgets/BannerAd/BannerAdWidget.dart';
 import 'package:tailor_app/Widgets/ExitDialoge/ExitDialoge.dart';
 
-class Homescreen extends StatefulWidget {
+class Homescreen extends ConsumerStatefulWidget {
   const Homescreen({super.key});
 
   @override
-  State<Homescreen> createState() => _HomescreenState();
+  ConsumerState<Homescreen> createState() => _HomescreenState();
 }
 
-class _HomescreenState extends State<Homescreen> {
+class _HomescreenState extends ConsumerState<Homescreen> {
   int _currentIndex = 0; // Tracks the selected tab index
   final PageController _pageController =
       PageController(); // Controls page switching
@@ -27,7 +28,6 @@ class _HomescreenState extends State<Homescreen> {
 
         body: Stack(
           children: [
-            // Page View to switch between different pages
             PageView(
               controller: _pageController,
               onPageChanged: (index) {

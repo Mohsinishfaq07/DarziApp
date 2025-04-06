@@ -30,22 +30,12 @@ class _NewlistScreenState extends ConsumerState<AddMeasurementScreen> {
     });
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //   if (mounted) {
-  //     final measurementFormNotifier = ref.read(
-  //       measurementFormProvider.notifier,
-  //     );
-  //     measurementFormNotifier.disposeControllers();
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     final formState = ref.watch(measurementFormProvider);
 
     return Scaffold(
+      bottomNavigationBar: BannerAdWidget(),
       appBar: AppBar(
         title: Text(
           "Enter Measurements",
@@ -137,8 +127,8 @@ class _NewlistScreenState extends ConsumerState<AddMeasurementScreen> {
               ),
             ),
           ),
+
           // Banner Ad
-          BannerAdWidget(),
         ],
       ),
     );

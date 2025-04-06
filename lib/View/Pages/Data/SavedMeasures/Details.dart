@@ -59,6 +59,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
     }
 
     return Scaffold(
+      bottomNavigationBar: BannerAdWidget(),
       appBar: AppBar(
         title: Text(
           "Edit ${widget.measurement.name}",
@@ -136,7 +137,6 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                 ),
               ),
             ),
-            BannerAdWidget(),
           ],
         ),
       ),
