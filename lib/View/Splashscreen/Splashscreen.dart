@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tailor_app/View/Home/HomeScreen.dart';
 import 'package:tailor_app/View/Auth/Login/LoginScreen.dart';
+import 'package:tailor_app/View/Home/HomeScreen.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -18,17 +18,14 @@ class _SplashscreenState extends State<Splashscreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-     final FirebaseAuth auth = FirebaseAuth.instance;
-        Future.delayed(Duration(seconds: 3), () {
-      if(auth.currentUser!=null){
-  Get.offAll(Homescreen());
-     }
-     else{
-  Get.offAll(LoginScreen());
-     }
-
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    Future.delayed(Duration(seconds: 3), () {
+      if (auth.currentUser != null) {
+        Get.offAll(Homescreen());
+      } else {
+        Get.offAll(LoginScreen());
+      }
     });
-    
   }
 
   @override
@@ -40,7 +37,11 @@ class _SplashscreenState extends State<Splashscreen> {
           mainAxisAlignment: MainAxisAlignment.center,
 
           children: [
-            Icon(Icons.accessibility, color: Colors.orange, size: 150),
+            Image(
+              image: AssetImage("assets/appicon.png"),
+              height: 250,
+              width: 250,
+            ),
             Gap(20),
             Text(
               "Tailor App",
@@ -54,7 +55,7 @@ class _SplashscreenState extends State<Splashscreen> {
               ),
             ),
             Gap(60),
-            CircularProgressIndicator(),
+            CircularProgressIndicator(color: Colors.orange),
           ],
         ),
       ),

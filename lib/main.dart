@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:tailor_app/View/Splashscreen/Splashscreen.dart';
 
 Future<void> main() async {
- WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(ProviderScope(child: const MyApp()));
 }

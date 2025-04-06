@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/Utils/models/measurmentmodel.dart';
 
@@ -24,11 +23,7 @@ class MeasurementSelectorSheet {
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
             boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                spreadRadius: 2,
-              )
+              BoxShadow(color: Colors.black12, blurRadius: 10, spreadRadius: 2),
             ],
           ),
           child: Column(
@@ -36,7 +31,7 @@ class MeasurementSelectorSheet {
             children: [
               // Header
               Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     "Select Measurement",
@@ -46,26 +41,25 @@ class MeasurementSelectorSheet {
                       color: Colors.blue[800],
                     ),
                   ),
-                  Gap(60),
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: () {
-                      onAddNew();
-                    },
-                    color: Colors.grey[600],
-                  ),
+                  Row(
+                    children: [
                       IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                    color: Colors.grey[600],
+                        icon: const Icon(Icons.add),
+                        onPressed: () {
+                          onAddNew();
+                        },
+                        color: Colors.grey[600],
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
+                        color: Colors.grey[600],
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const Divider(
-                thickness: 1,
-                color: Colors.grey,
-                height: 16,
-              ),
+              const Divider(thickness: 1, color: Colors.grey, height: 16),
 
               // Measurement List
               if (measurements.isEmpty)
@@ -73,9 +67,7 @@ class MeasurementSelectorSheet {
                   padding: const EdgeInsets.symmetric(vertical: 24),
                   child: Text(
                     "No measurements found",
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey[600],
-                    ),
+                    style: GoogleFonts.poppins(color: Colors.grey[600]),
                   ),
                 )
               else
