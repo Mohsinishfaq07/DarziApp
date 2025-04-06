@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tailor_app/Utils/Snackbar/Snackbar.dart';
 import 'package:tailor_app/Utils/models/measurmentmodel.dart';
-import 'package:tailor_app/View/Data/SavedMeasures/SavedScreen.dart';
+import 'package:tailor_app/View/Pages/Data/SavedMeasures/SavedScreen.dart';
 
 final firestoreProvider = Provider((ref) => FirebaseFirestore.instance);
 final authProvider = Provider((ref) => FirebaseAuth.instance);
@@ -14,7 +14,10 @@ final measurementProvider = StreamProvider<List<Measurement>>((ref) {
 });
 
 final measurementRepositoryProvider = Provider(
-  (ref) => MeasurementRepository(ref.read(firestoreProvider), ref.read(authProvider)),
+  (ref) => MeasurementRepository(
+    ref.read(firestoreProvider),
+    ref.read(authProvider),
+  ),
 );
 
 class MeasurementRepository {
@@ -24,10 +27,13 @@ class MeasurementRepository {
   MeasurementRepository(this._firestore, this._auth);
 
   /// ✅ **Save or Update Measurement (Based on Mobile Number)**
-  Future<void> saveOrUpdateMeasurement(Measurement measurement, BuildContext context) async {
+  Future<void> saveOrUpdateMeasurement(
+    Measurement measurement,
+    BuildContext context,
+  ) async {
     final user = _auth.currentUser;
     if (user == null) {
-      showSnackBar("Error", "No User Logged In");
+      showSnackBar("Error", "You must be logged in to save measurements.");
       return;
     }
 
@@ -37,12 +43,15 @@ class MeasurementRepository {
           .doc(user.email!) // Tailor's email as document ID
           .collection('clients')
           .doc(measurement.number) // Client's phone number as document ID
-          .set(measurement.toMap(user.email!), SetOptions(merge: true)); // Merge if exists
+          .set(
+            measurement.toMap(user.email!),
+            SetOptions(merge: true),
+          ); // Merge if exists
 
-      showSnackBar("Success", "Measurement Saved Successfully");
+      showSnackBar("Success", "Measurement saved successfully.");
       Navigator.pop(context);
     } catch (e) {
-      showSnackBar("Error", e.toString());
+      showSnackBar("Error", "Something went wrong. Please try again.");
     }
   }
 
@@ -89,7 +98,7 @@ class MeasurementRepository {
   Future<void> deleteMeasurement(String clientNumber) async {
     final user = _auth.currentUser;
     if (user == null) {
-      showSnackBar("Error", "No User Logged In");
+      showSnackBar("Error", "You need to be logged in to delete measurements.");
       return;
     }
 
@@ -101,51 +110,58 @@ class MeasurementRepository {
           .doc(clientNumber)
           .delete();
 
-      showSnackBar("Success", "Measurement Deleted Successfully");
+      showSnackBar("Success", "Measurement deleted successfully.");
     } catch (e) {
-      showSnackBar("Error", e.toString());
+      showSnackBar("Error", "Failed to delete. Please try again later.");
     }
   }
-Future<void> UpdateData(Measurement measurement, BuildContext context) async {
-  final user = _auth.currentUser;
-  if (user == null) {
-    showSnackBar("Error", "No User Logged In");
-    return;
+
+  Future<void> updateData(Measurement measurement, BuildContext context) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      showSnackBar("Error", "You must be logged in to update measurements.");
+      return;
+    }
+
+    try {
+      final docRef = _firestore
+          .collection('users')
+          .doc(user.email!)
+          .collection('clients')
+          .doc(measurement.number);
+
+      await docRef.set(measurement.toMap(user.email!));
+
+      showSnackBar("Success", "Measurement updated successfully.");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return SavedScreen();
+          },
+        ),
+      );
+    } catch (e) {
+      showSnackBar("Error", "Something went wrong. Please try again.");
+    }
   }
-
-  try {
-    final docRef = _firestore
-        .collection('users')
-        .doc(user.email!)
-        .collection('clients')
-        .doc(measurement.number);
-
-    await docRef.set(measurement.toMap(user.email!));
-
-    showSnackBar("Success", "Measurement Saved Successfully");
-Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-  return SavedScreen();
-},));
-  } catch (e) {
-    showSnackBar("Error", e.toString());
-  }
-}
 
   /// ✅ **Fetch a Single Measurement for Editing**
   Future<Measurement?> getMeasurementByNumber(String clientNumber) async {
     final user = _auth.currentUser;
     if (user == null) {
-      showSnackBar("Error", "No User Logged In");
+      showSnackBar("Error", "You must be logged in to fetch data.");
       return null;
     }
 
     try {
-      DocumentSnapshot<Map<String, dynamic>> doc = await _firestore
-          .collection('users')
-          .doc(user.email!)
-          .collection('clients')
-          .doc(clientNumber)
-          .get();
+      DocumentSnapshot<Map<String, dynamic>> doc =
+          await _firestore
+              .collection('users')
+              .doc(user.email!)
+              .collection('clients')
+              .doc(clientNumber)
+              .get();
 
       if (doc.exists) {
         final data = doc.data()!;
@@ -173,7 +189,7 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         );
       }
     } catch (e) {
-      showSnackBar("Error", e.toString());
+      showSnackBar("Error", "Unable to retrieve data. Please try again.");
     }
 
     return null;

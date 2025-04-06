@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:tailor_app/Utils/Service/AuthService.dart';
+import 'package:tailor_app/View/Auth/Login/LoginScreen.dart';
+import 'package:tailor_app/Widgets/Button/CustomButton.dart';
+import 'package:tailor_app/Widgets/Inpufield/AuthField.dart'; // Import the reusable text field
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -15,6 +18,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _passwordController = TextEditingController();
   final _authService = AuthService();
   bool _isLoading = false;
+  bool _isPasswordVisible = false; // To toggle password visibility
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -26,20 +30,22 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> _signUp() async {
     FocusScope.of(context).unfocus();
-    
+
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
-    
+
     try {
       await _authService.signUp(
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
-      
+
       if (mounted) {
-        _authService.login( _emailController.text.trim(),  _passwordController.text.trim(),);
-        
+        await _authService.login(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -83,16 +89,17 @@ class _SignupScreenState extends State<SignupScreen> {
                         Text(
                           "Sign up to get started",
                           style: GoogleFonts.poppins(
-                            fontSize: 16, 
+                            fontSize: 16,
                             color: Colors.grey.shade600,
                           ),
                         ),
                         const SizedBox(height: 20),
 
-                        // Email Field
-                        TextFormField(
+                        // Email Field using CustomTextField
+                        CustomTextField(
                           controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
+                          label: "Email",
+                          icon: Icons.email,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter email';
@@ -102,19 +109,13 @@ class _SignupScreenState extends State<SignupScreen> {
                             }
                             return null;
                           },
-                          decoration: InputDecoration(
-                            labelText: "Email",
-                            prefixIcon: Icon(Icons.email, color: Colors.blue.shade700),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          ),
                         ),
                         const SizedBox(height: 15),
-
-                        // Password Field
-                        TextFormField(
+                        CustomTextField(
                           controller: _passwordController,
-                          obscureText: true,
+                          label: "Password",
+                          icon: Icons.lock,
+                          obscureText: !_isPasswordVisible,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter password';
@@ -124,53 +125,34 @@ class _SignupScreenState extends State<SignupScreen> {
                             }
                             return null;
                           },
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                            prefixIcon: Icon(Icons.lock, color: Colors.blue.shade700),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                          suffixIcon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.blue.shade700,
                           ),
+                          onSuffixIconPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
                         ),
                         const SizedBox(height: 25),
-
-                        // Signup Button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _isLoading ? null : _signUp,
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                              backgroundColor: Colors.blue.shade700,
-                            ),
-                            child: _isLoading
-                                ? const CircularProgressIndicator(color: Colors.white)
-                                : Text(
-                                    "Sign Up",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white
-                                    ),
-                                  ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 15),
-
-                        // Login Link
-                        TextButton(
+                        ActionButton(
+                          label: "Sign Up",
+                          isLoading: _isLoading,
                           onPressed: () {
-                            Navigator.pop(context);
+                            if (_isLoading) return;
+                            _signUp();
                           },
-                          child: Text(
-                            "Already have an account? Login",
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: Colors.blue.shade700,
-                            ),
-                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        CustomtextButton(
+                          context,
+                          "Already have an account? Login",
+                          () {
+                            Get.offAll(LoginScreen());
+                          },
                         ),
                       ],
                     ),

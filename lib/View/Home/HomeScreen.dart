@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tailor_app/Utils/Service/AuthService.dart';
-import 'package:tailor_app/View/Data/Dress/Saveddress.dart';
-import 'package:tailor_app/View/Data/SavedMeasures/SavedScreen.dart';
-import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:tailor_app/Utils/Provider/AdProviders/BannerAdProvider.dart';
+import 'package:tailor_app/View/Pages/Data/Dress/Saveddress.dart';
+import 'package:tailor_app/View/Pages/Data/NewEntry/NewEntryPage.dart';
+import 'package:tailor_app/View/Pages/Data/SavedMeasures/SavedScreen.dart';
+import 'package:tailor_app/View/Pages/ProfilePage/Profilepage.dart';
+import 'package:tailor_app/Widgets/ExitDialoge/ExitDialoge.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -15,64 +17,93 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
- final AuthService _auth = AuthService();
+  int _currentIndex = 0; // Tracks the selected tab index
+  final PageController _pageController =
+      PageController(); // Controls page switching
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blue.shade200,
-      appBar: AppBar(
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: IconButton(onPressed: () {
-              _auth.logout(context);
-            }, icon: Icon(Icons.logout,color: Colors.white,size: 30,)),
-          )
-        ],
-        title: Text("New Entry"),
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-        titleTextStyle: GoogleFonts.poppins(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Choose a Gender : ",style: textstyle,),
-          Gap(50),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-          GenderWidget("Male",Icons.person,"assets/men.webp"),
-          Gap(20),
-            GenderWidget("Female",Icons.person_2,"assets/female.jpg"),
-            ],
+    return ExitDialog(
+      child: Scaffold(
+        backgroundColor: Colors.blue.shade200,
+
+        body: Stack(
+          children: [
+            // Page View to switch between different pages
+            PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              children: [
+                // New Entry Page
+                NewEntryPage(),
+                // Saved Screen Page
+                SavedScreen(),
+                // Dresses Page
+                SavedDress(),
+                ProfileScreen(),
+              ],
+            ),
+
+            // Banner Ad Positioned at the bottom of the screen
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final bannerAd = ref.watch(bannerAdProvider);
+                  return SizedBox(
+                    width: bannerAd.size.width.toDouble(),
+                    height: bannerAd.size.height.toDouble(),
+                    child: AdWidget(ad: bannerAd),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentIndex, // Tracks selected tab
+          onTap: (int index) {
+            setState(() {
+              _currentIndex = index;
+            });
+            _pageController.jumpToPage(index); // Switch pages on tab click
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add),
+              label: 'New Entry',
+              backgroundColor: Colors.blue, // Active tab background color
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.save),
+              label: 'Saved',
+              backgroundColor: Colors.blue,
+            ),
+            BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage("assets/tshirt.png")),
+              label: 'Dresses',
+              backgroundColor: Colors.blue,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile', // Profile tab
+            ),
+          ],
+          selectedItemColor: Colors.white, // Active item color
+          unselectedItemColor: Colors.grey, // Inactive item color
+          backgroundColor: Colors.blue, // Bottom navigation bar background
+          selectedLabelStyle: GoogleFonts.poppins(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
           ),
-
-          Gap(40),
-          CustomButton(() {
-            Get.to(SavedScreen());    
-          },"Saved Entries"),
-          Gap(10),
-   CustomButton(() {
-            Get.to(SavedDress());    
-          },"Dresses"),
-
-        ],
+        ),
       ),
     );
   }
-  
-final textstyle=GoogleFonts.poppins(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    );
 }
-
- 
-

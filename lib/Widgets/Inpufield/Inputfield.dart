@@ -26,10 +26,7 @@ class CustomInputField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
+          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
         ),
         const SizedBox(height: 4),
         Container(
@@ -68,4 +65,39 @@ class CustomInputField extends StatelessWidget {
       ],
     );
   }
+}
+
+Widget buildInputField(String label, TextEditingController controller) {
+  return TextField(
+    controller: controller,
+    decoration: InputDecoration(
+      labelText: label,
+      border: const OutlineInputBorder(),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    ),
+  );
+}
+
+Widget buildDateField(
+  BuildContext context,
+  GestureTapCallback onTap,
+  String label,
+) {
+  return GestureDetector(
+    onTap: onTap,
+    // onTap: () => _selectDate(context),
+    child: AbsorbPointer(
+      child: TextField(
+        controller: TextEditingController(
+          text: label,
+          // text: _bookDate.toLocal().toString().split(' ')[0],
+        ),
+        decoration: const InputDecoration(
+          labelText: "Booking Date",
+          border: OutlineInputBorder(),
+          suffixIcon: Icon(Icons.calendar_today),
+        ),
+      ),
+    ),
+  );
 }

@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/Utils/Provider/DressProvider.dart';
 import 'package:tailor_app/Utils/Provider/MeasurementsProvider.dart';
 import 'package:tailor_app/Utils/Snackbar/Snackbar.dart';
 import 'package:tailor_app/Utils/models/DressModel.dart';
 import 'package:tailor_app/Utils/models/measurmentmodel.dart';
 import 'package:tailor_app/View/Home/HomeScreen.dart';
+import 'package:tailor_app/Widgets/Appbar/Customappbar.dart';
 import 'package:tailor_app/Widgets/Bottomsheet/Bottomsheet.dart';
-
 import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
 import 'package:tailor_app/Widgets/Inpufield/Inputfield.dart';
-
 
 class NewDress extends ConsumerStatefulWidget {
   const NewDress({super.key});
@@ -84,20 +82,7 @@ class _NewDressState extends ConsumerState<NewDress> {
     final measurementStream = ref.watch(measurementProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
-          "New Dress",
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.blueAccent,
-        elevation: 0,
-      ),
+      appBar: CustomAppbar("New Dress"),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -163,7 +148,9 @@ class _NewDressState extends ConsumerState<NewDress> {
     );
   }
 
-  Widget _buildMeasurementSection(AsyncValue<List<Measurement>> measurementStream) {
+  Widget _buildMeasurementSection(
+    AsyncValue<List<Measurement>> measurementStream,
+  ) {
     return Column(
       children: [
         Text(
@@ -176,31 +163,27 @@ class _NewDressState extends ConsumerState<NewDress> {
         Row(
           children: [
             Expanded(
-              child: CustomButton2(
-          () {
-                   measurementStream.whenData((measurements) {
-                    MeasurementSelectorSheet.show(
-                      context: context,
-                      measurements: measurements,
-                      onMeasurementSelected: (measurement) {
-                        setState(() {
-                          _selectedMeasurement = measurement;
-                          _nameController.text = measurement.name;
-                          _numberController.text = measurement.number;
-                        });
-                      },
-                      onAddNew: () => Get.to( Homescreen()),
-                    );
-                  });
-          },"Add Measures",
-               
-              ),
+              child: CustomButton2(() {
+                measurementStream.whenData((measurements) {
+                  MeasurementSelectorSheet.show(
+                    context: context,
+                    measurements: measurements,
+                    onMeasurementSelected: (measurement) {
+                      setState(() {
+                        _selectedMeasurement = measurement;
+                        _nameController.text = measurement.name;
+                        _numberController.text = measurement.number;
+                      });
+                    },
+                    onAddNew: () => Get.to(Homescreen()),
+                  );
+                });
+              }, "Add Measures"),
             ),
             const Gap(16),
-   CustomButton2(() {
-    _saveDress();
-   
-   }, "Save Dress")
+            CustomButton2(() {
+              _saveDress();
+            }, "Save Dress"),
           ],
         ),
       ],

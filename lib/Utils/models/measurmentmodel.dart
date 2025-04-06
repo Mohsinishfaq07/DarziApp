@@ -42,30 +42,36 @@ class Measurement {
     this.pantWidth,
     this.note,
   });
-factory Measurement.fromMap(Map<String, dynamic> map) {
-  return Measurement(
-    name: map['name'] ?? '',
-    number: map['number'] ?? '',
-    gender: map['gender'] ?? '',
-    length: (map['length'] ?? 0).toDouble(),
-    arm: (map['arm'] ?? 0).toDouble(),
-    shoulder: (map['shoulder'] ?? 0).toDouble(),
-    color: map['color'] ?? '',
-    chest: (map['chest'] ?? 0).toDouble(),
-    lap: (map['lap'] ?? 0).toDouble(),
-    pant: (map['pant'] ?? 0).toDouble(),
-    paincha: (map['paincha'] ?? 0).toDouble(),
-    armRound: map['armRound'] != null ? (map['armRound'] as num).toDouble() : null,
-    armHole: map['armHole'] != null ? (map['armHole'] as num).toDouble() : null,
-    waist: map['waist'] != null ? (map['waist'] as num).toDouble() : null,
-    hips: map['hips'] != null ? (map['hips'] as num).toDouble() : null,
-    lapExtra: map['lapExtra'] != null ? (map['lapExtra'] as num).toDouble() : null,
-    side: map['side'] != null ? (map['side'] as num).toDouble() : null,
-    neck: map['neck'] != null ? (map['neck'] as num).toDouble() : null,
-    pantWidth: map['pantWidth'] != null ? (map['pantWidth'] as num).toDouble() : null,
-    note: map['note'] as String?,
-  );
-}
+  factory Measurement.fromMap(Map<String, dynamic> map) {
+    return Measurement(
+      name: map['name'] ?? '',
+      number: map['number'] ?? '',
+      gender: map['gender'] ?? '',
+      length: (map['length'] ?? 0).toDouble(),
+      arm: (map['arm'] ?? 0).toDouble(),
+      shoulder: (map['shoulder'] ?? 0).toDouble(),
+      color: map['color'] ?? '',
+      chest: (map['chest'] ?? 0).toDouble(),
+      lap: (map['lap'] ?? 0).toDouble(),
+      pant: (map['pant'] ?? 0).toDouble(),
+      paincha: (map['paincha'] ?? 0).toDouble(),
+      armRound:
+          map['armRound'] != null ? (map['armRound'] as num).toDouble() : null,
+      armHole:
+          map['armHole'] != null ? (map['armHole'] as num).toDouble() : null,
+      waist: map['waist'] != null ? (map['waist'] as num).toDouble() : null,
+      hips: map['hips'] != null ? (map['hips'] as num).toDouble() : null,
+      lapExtra:
+          map['lapExtra'] != null ? (map['lapExtra'] as num).toDouble() : null,
+      side: map['side'] != null ? (map['side'] as num).toDouble() : null,
+      neck: map['neck'] != null ? (map['neck'] as num).toDouble() : null,
+      pantWidth:
+          map['pantWidth'] != null
+              ? (map['pantWidth'] as num).toDouble()
+              : null,
+      note: map['note'] as String?,
+    );
+  }
 
   static final Map<String, String> labels = {
     'name': 'Name - نام',

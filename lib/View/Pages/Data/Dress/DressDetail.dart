@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:tailor_app/Utils/Provider/AdProviders/BannerAdProvider.dart';
 import 'package:tailor_app/Utils/Provider/DressProvider.dart';
 import 'package:tailor_app/Utils/Snackbar/Snackbar.dart';
 import 'package:tailor_app/Utils/models/DressModel.dart';
-import 'package:tailor_app/View/Data/SavedMeasures/Details.dart';
-
+import 'package:tailor_app/View/Pages/Data/SavedMeasures/Details.dart';
+import 'package:tailor_app/Widgets/Appbar/Customappbar.dart';
+import 'package:tailor_app/Widgets/Button/CustomButton.dart';
 import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
+import 'package:tailor_app/Widgets/Inpufield/Inputfield.dart';
 
 class DressDetail extends ConsumerStatefulWidget {
   final DressModel dress;
@@ -61,19 +64,15 @@ class _DressDetailState extends ConsumerState<DressDetail> {
       );
       return;
     }
-
     setState(() => _isSaving = true);
-
     final updatedDress = widget.dress.copyWith(
       name: _nameController.text,
       number: _numberController.text,
       dressColor: _colorController.text,
       bookDate: _bookDate,
     );
-
     await ref.read(dressProvider.notifier).addOrUpdateDress(updatedDress);
     setState(() => _isSaving = false);
-    
     showSnackBar("Dress Details", "Changes Saved");
     Navigator.pop(context);
   }
@@ -81,18 +80,7 @@ class _DressDetailState extends ConsumerState<DressDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Dress Details",
-          style: GoogleFonts.poppins(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-      ),
+      appBar: CustomAppbar("Dress Details"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -101,90 +89,53 @@ class _DressDetailState extends ConsumerState<DressDetail> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    _buildInputField("Name", _nameController),
+                    buildInputField("Name", _nameController),
                     const Gap(16),
-                    _buildInputField("Number", _numberController),
+                    buildInputField("Number", _numberController),
                     const Gap(16),
-                    _buildInputField("Color", _colorController),
+                    buildInputField("Color", _colorController),
                     const Gap(16),
-                    _buildDateField(context),
+                    buildDateField(context, () {
+                      _selectDate(context);
+                    }, _bookDate.toLocal().toString().split(' ')[0]),
                     const Gap(24),
-                    
-                    CustomButton2(
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => 
-                                DetailScreen(measurement: widget.dress.measurements),
-                          ),
+                    CustomButton2(() {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => DetailScreen(
+                                measurement: widget.dress.measurements,
+                              ),
+                        ),
+                      );
+                    }, "VIEW MEASUREMENTS"),
+                    Gap(30),
+                    ActionButton(
+                      label: "Save Changes",
+                      isLoading: _isSaving,
+                      onPressed: () {
+                        if (_isSaving) return;
+                        _saveChanges();
+                      },
+                    ),
+                    const Gap(30),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final bannerAd = ref.watch(bannerAdProvider);
+                        return SizedBox(
+                          width: bannerAd.size.width.toDouble(),
+                          height: bannerAd.size.height.toDouble(),
+                          child: AdWidget(ad: bannerAd),
                         );
                       },
-                      "VIEW MEASUREMENTS",
                     ),
-                    Gap(30),
-                      _buildSaveButton(),
                   ],
                 ),
               ),
             ),
-            // const Gap(16),
-          
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildInputField(String label, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      ),
-    );
-  }
-
-  Widget _buildDateField(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _selectDate(context),
-      child: AbsorbPointer(
-        child: TextField(
-          controller: TextEditingController(
-            text: _bookDate.toLocal().toString().split(' ')[0],
-          ),
-          decoration: const InputDecoration(
-            labelText: "Booking Date",
-            border: OutlineInputBorder(),
-            suffixIcon: Icon(Icons.calendar_today),
-          ),
-        ),
-      ),
-    );
-  }
-
-
-  Widget _buildSaveButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          backgroundColor: Colors.blue,
-        ),
-        onPressed: _isSaving ? null : _saveChanges,
-        child: _isSaving
-            ? const CircularProgressIndicator(color: Colors.white)
-            : Text(
-                "SAVE CHANGES",
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
       ),
     );
   }
