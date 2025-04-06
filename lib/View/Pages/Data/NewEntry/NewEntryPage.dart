@@ -40,7 +40,7 @@ class NewEntryPage extends StatelessWidget {
             children: [
               GenderWidget("Male", Icons.person, "assets/men.webp"),
               Gap(20),
-              GenderWidget("Female", Icons.person_2, "assets/female.jpg"),
+              GenderWidget("Female", Icons.person_2, "assets/female.webp"),
             ],
           ),
           Gap(40),

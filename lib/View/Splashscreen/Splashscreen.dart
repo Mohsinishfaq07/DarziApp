@@ -38,7 +38,7 @@ class _SplashscreenState extends State<Splashscreen> {
 
           children: [
             Image(
-              image: AssetImage("assets/appicon.png"),
+              image: AssetImage("assets/appicon.webp"),
               height: 250,
               width: 250,
             ),

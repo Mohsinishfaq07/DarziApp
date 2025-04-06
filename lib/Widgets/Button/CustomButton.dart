@@ -65,7 +65,7 @@ ElevatedButton LoginwithGoogle(VoidCallback googleLogin) {
       backgroundColor: Colors.white,
       side: BorderSide(color: Colors.blue.shade700),
     ),
-    icon: Image.asset('assets/googleicon.png', height: 22),
+    icon: Image.asset('assets/googleicon.webp', height: 22),
     label: Text(
       "Login with Google",
       style: GoogleFonts.poppins(
