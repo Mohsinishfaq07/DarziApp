@@ -1,7 +1,5 @@
 import 'dart:ui';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -32,6 +30,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    // Initialize controllers
     nameController = TextEditingController();
     emailController = TextEditingController();
     mobileController = TextEditingController();
@@ -41,10 +40,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final profileNotifier = ref.read(profileProvider.notifier);
-
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final email = auth.currentUser?.email;
+    final profileState = ref.watch(profileProvider);
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -59,33 +55,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               end: Alignment.bottomRight,
             ),
           ),
-          child: StreamBuilder<DocumentSnapshot>(
-            stream:
-                FirebaseFirestore.instance
-                    .collection("tailor_profiles")
-                    .doc(email)
-                    .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: Circleloading());
+          child: profileState.when(
+            loading: () => const Center(child: Circleloading()),
+            error:
+                (e, _) => Center(
+                  child: Text(
+                    "Error: $e",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+            data: (profile) {
+              // Only update the controllers if the profile data is available
+              if (profile != null) {
+                nameController.text = profile.name;
+                emailController.text = profile.email;
+                mobileController.text = profile.mobile;
+                shopNameController.text = profile.shopName;
+                shopAddressController.text = profile.shopAddress;
               }
-
-              if (snapshot.hasError) {
-                return Center(child: Text("Error: ${snapshot.error}"));
-              }
-
-              if (!snapshot.hasData || !snapshot.data!.exists) {
-                return Center(child: Text("Profile not found"));
-              }
-
-              final data = snapshot.data!.data() as Map<String, dynamic>;
-              final profile = ProfileModel.fromMap(data);
-
-              nameController.text = profile.name;
-              emailController.text = profile.email;
-              mobileController.text = profile.mobile;
-              shopNameController.text = profile.shopName;
-              shopAddressController.text = profile.shopAddress;
 
               return LayoutBuilder(
                 builder: (context, constraints) {
@@ -173,35 +164,29 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                       const SizedBox(height: 20),
                                       ActionButton(
                                         label: 'Save',
-                                        isLoading: profileNotifier.isSaving,
+                                        isLoading:
+                                            ref
+                                                .watch(profileProvider.notifier)
+                                                .isSaving, // Set the loading flag
                                         onPressed: () {
-                                          if (profileNotifier.isSaving) {
-                                            return;
-                                          } else {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              FocusScope.of(
-                                                context,
-                                              ).unfocus(); // Dismiss the keyboard
-                                              final profile = ProfileModel(
-                                                name:
-                                                    nameController.text.trim(),
-                                                email:
-                                                    emailController.text.trim(),
-                                                mobile:
-                                                    mobileController.text
-                                                        .trim(),
-                                                shopName:
-                                                    shopNameController.text
-                                                        .trim(),
-                                                shopAddress:
-                                                    shopAddressController.text
-                                                        .trim(),
-                                              );
-                                              profileNotifier.saveProfile(
-                                                profile,
-                                              );
-                                            }
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            final profile = ProfileModel(
+                                              name: nameController.text.trim(),
+                                              email:
+                                                  emailController.text.trim(),
+                                              mobile:
+                                                  mobileController.text.trim(),
+                                              shopName:
+                                                  shopNameController.text
+                                                      .trim(),
+                                              shopAddress:
+                                                  shopAddressController.text
+                                                      .trim(),
+                                            );
+                                            ref
+                                                .read(profileProvider.notifier)
+                                                .saveProfile(profile);
                                           }
                                         },
                                       ),
