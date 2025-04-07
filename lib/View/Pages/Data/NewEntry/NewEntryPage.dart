@@ -1,8 +1,13 @@
-// New Entry Page Widget
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/Widgets/Genderwidget/GenderWidget.dart';
+
+final textStyle = GoogleFonts.poppins(
+  fontSize: 25,
+  fontWeight: FontWeight.bold,
+  color: Colors.white, // Changed to white for better visibility
+);
 
 class NewEntryPage extends StatelessWidget {
   const NewEntryPage({super.key});
@@ -22,36 +27,33 @@ class NewEntryPage extends StatelessWidget {
         ),
       ),
 
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "Choose a Gender : ",
-            style: GoogleFonts.poppins(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0), // Add padding for more space
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Choose a Gender : ",
+              style: GoogleFonts.poppins(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
-          ),
-          Gap(50),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GenderWidget("Male", Icons.person, "assets/men.webp"),
-              Gap(20),
-              GenderWidget("Female", Icons.person_2, "assets/female.webp"),
-            ],
-          ),
-          Gap(40),
-          // CustomButton(() {
-          //   Get.to(SavedScreen());
-          // }, "Saved Entries"),
-          // Gap(10),
-          // CustomButton(() {
-          //   Get.to(SavedDress());
-          // }, "Dresses"),
-        ],
+            Gap(35),
+
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GenderWidget("Male", Icons.person, "assets/men.webp"),
+                Gap(20),
+                GenderWidget("Female", Icons.person_2, "assets/female.webp"),
+              ],
+            ),
+            Gap(30),
+          ],
+        ),
       ),
     );
   }

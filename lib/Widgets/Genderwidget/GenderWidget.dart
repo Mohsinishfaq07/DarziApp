@@ -3,12 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/View/Pages/Data/Add%20Measurements/AddMeasurements.dart';
-
-final textStyle = GoogleFonts.poppins(
-  fontSize: 25,
-  fontWeight: FontWeight.bold,
-  color: Colors.white, // Changed to white for better visibility
-);
+import 'package:tailor_app/View/Pages/Data/NewEntry/NewEntryPage.dart';
 
 Widget GenderWidget(String title, IconData icon, String imageUrl) {
   return InkWell(
@@ -18,20 +13,19 @@ Widget GenderWidget(String title, IconData icon, String imageUrl) {
       } else {
         Get.to(AddMeasurementScreen(isFemale: true));
       }
-      // Handle tap
     },
     child: Center(
       child: Container(
-        height: 200, // Increased height for better proportion
-        width: 150,
+        height: 220, // Increased height for better proportion
+        width: 160,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white, width: 3),
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(color: Colors.white, width: 4),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.2),
               spreadRadius: 2,
-              blurRadius: 5,
+              blurRadius: 6,
               offset: const Offset(0, 3),
             ),
           ],
@@ -39,28 +33,21 @@ Widget GenderWidget(String title, IconData icon, String imageUrl) {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Background image
             ClipRRect(
-              borderRadius: BorderRadius.circular(
-                17,
-              ), // Slightly smaller than container
+              borderRadius: BorderRadius.circular(20),
               child: Image.asset(imageUrl, fit: BoxFit.cover),
             ),
-
-            // Gradient overlay for better text visibility
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(17),
+                borderRadius: BorderRadius.circular(20),
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  colors: [Colors.transparent, Colors.black.withOpacity(0.6)],
                   stops: const [0.6, 1],
                 ),
               ),
             ),
-
-            // Content
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -70,13 +57,13 @@ Widget GenderWidget(String title, IconData icon, String imageUrl) {
                     shadows: [
                       Shadow(
                         color: Colors.black.withOpacity(0.8),
-                        blurRadius: 6,
+                        blurRadius: 8,
                         offset: const Offset(1, 1),
                       ),
                     ],
                   ),
                 ),
-                const Gap(15),
+                const Gap(10),
               ],
             ),
           ],
@@ -90,14 +77,34 @@ Widget CustomButton(GestureTapCallback ontap, String title) {
   return InkWell(
     onTap: ontap,
     child: Container(
-      height: Get.height * 0.1,
-      width: Get.width * 0.6,
-
+      height: Get.height * 0.12,
+      width: Get.width * 0.7,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Colors.blue,
+        gradient: LinearGradient(
+          colors: [Colors.blue, Colors.blueAccent],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.3),
+            spreadRadius: 3,
+            blurRadius: 6,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: Center(child: Text(title, style: textStyle)),
+      child: Center(
+        child: Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
     ),
   );
 }
@@ -107,8 +114,7 @@ Widget CustomButton2(GestureTapCallback ontap, String title) {
     onTap: ontap,
     child: Container(
       height: Get.height * 0.08,
-      width: Get.width * 0.5,
-
+      width: Get.width * 0.6,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: Colors.blue,
@@ -117,7 +123,7 @@ Widget CustomButton2(GestureTapCallback ontap, String title) {
         child: Text(
           title,
           style: GoogleFonts.poppins(
-            fontSize: 15,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),

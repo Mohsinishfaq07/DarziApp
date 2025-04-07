@@ -15,7 +15,7 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]);
+  ]);  
 
   // Initialize Google Mobile Ads
   MobileAds.instance.initialize();

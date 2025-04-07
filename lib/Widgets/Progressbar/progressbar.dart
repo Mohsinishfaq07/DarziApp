@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 class Circleloading extends StatelessWidget {
   final double size;
@@ -9,14 +8,10 @@ class Circleloading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Shimmer.fromColors(
-        baseColor: Colors.orange,
-        highlightColor: Colors.blue,
-        child: SizedBox(
-          width: 40,
-          height: 40,
-          child: const CircularProgressIndicator(strokeWidth: 4),
-        ),
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: const CircularProgressIndicator(color: Colors.orange),
       ),
     );
   }

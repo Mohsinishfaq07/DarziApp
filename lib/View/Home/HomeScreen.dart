@@ -92,3 +92,5 @@ class _HomescreenState extends ConsumerState<Homescreen> {
     );
   }
 }
+
+final pageIndexProvider = StateProvider<int>((ref) => 0);

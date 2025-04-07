@@ -67,6 +67,48 @@ class CustomInputField extends StatelessWidget {
   }
 }
 
+Widget ProfileFields(
+  TextEditingController controller,
+  String label,
+  IconData icon, {
+  bool readOnly = false,
+  int maxLines = 1,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "$label :",
+          style: TextStyle(
+            color: Colors.indigo.shade700,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          readOnly: readOnly,
+          maxLines: maxLines,
+          validator:
+              (value) => value == null || value.isEmpty ? "Required" : null,
+          decoration: InputDecoration(
+            prefixIcon: Icon(icon, color: Colors.indigo),
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.7),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 Widget buildInputField(String label, TextEditingController controller) {
   return TextField(
     controller: controller,
